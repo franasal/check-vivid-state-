@@ -29,4 +29,6 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
- 
+      - name: Check if TELEGRAM_TOKEN is set
+        run: |
+           echo "TELEGRAM_TOKEN is ${{ secrets.TELEGRAM_TOKEN }}"
