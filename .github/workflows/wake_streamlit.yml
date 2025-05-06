@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install selenium
-
+      - name: Change to repo directory
+        run: cd $GITHUB_WORKSPACE
+      - name: Show directory contents
+        run: ls -l
       - name: Run wake script
         run: python check_substances.py
