@@ -14,6 +14,7 @@ def send_telegram_message(message):
     response = requests.post(url, data=data)
     print("Telegram status:", response.status_code)
     print("Response:", response.text)
+    print(chat_id)
 
 # Setup headless browser
 options = Options()
