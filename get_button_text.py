@@ -1,42 +1,34 @@
+import os
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-
-
+from selenium.webdriver.chrome.service import Service
 
 def send_telegram_message(message):
     token = os.getenv("TELEGRAM_TOKEN")
-    print(token)
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     data = {"chat_id": chat_id, "text": message}
-    requests.post(url, data=data)
     response = requests.post(url, data=data)
     print("Telegram status:", response.status_code)
     print("Response:", response.text)
-    print(chat_id)
-    
-# Set up headless browser
-options = Options()
-options.add_argument("--headless")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
 
-# Launch browser
-driver = webdriver.Chrome(options=options)
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+service = Service("/usr/bin/chromedriver")
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 try:
-    url = "https://franasal-movie-picker-movie-picker-qhlofh.streamlit.app/"
-    driver.get(url)
-
-    # Wait for the page to load (adjust time as needed)
+    driver.get("https://franasal-movie-picker-movie-picker-qhlofh.streamlit.app/")
     driver.implicitly_wait(10)
 
-    # Find all buttons and print their text
-    buttons = driver.find_elements(By.TAG_NAME, "button")
+    buttons = driver.find_elements("tag name", "button")
     for i, button in enumerate(buttons):
         print(f"Button {i+1}: {button.text}")
-        send_telegram_message(button.text)
-
+        if button.text:
+            send_telegram_message(button.text)
 finally:
     driver.quit()
