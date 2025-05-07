@@ -1,4 +1,4 @@
-name: Get Button Text
+name: Get Button Text and Send via Telegram
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout repo
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -16,13 +16,24 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install Chrome and Chromedriver
       run: |
-         pip install selenium
-         sudo apt-get update
-         sudo apt-get install -y chromium-chromedriver
-         if [ ! -f /usr/bin/chromedriver ]; then
-         sudo cp /usr/lib/chromium-browser/chromedriver /usr/bin/
-         fi
-    - name: Run script
+        sudo apt-get update
+        sudo apt-get install -y wget unzip jq
+        wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y ./google-chrome-stable_current_amd64.deb
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json" | jq -r --arg v "$CHROME_VERSION" '.versions[] | select(.version | startswith($v)) | .version' | head -n 1)
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip"
+        unzip chromedriver-linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
+        sudo chmod +x /usr/bin/chromedriver
+
+    - name: Install Python dependencies
+      run: pip install selenium requests
+
+    - name: Run button checker
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: python get_button_text.py
