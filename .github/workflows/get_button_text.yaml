@@ -1,6 +1,8 @@
 name: Get Button Text and Send via Telegram
 
 on:
+  schedule:
+    - cron: '0 0 * * *'  # every day at 00:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -31,6 +33,12 @@ jobs:
 
     - name: Install Python dependencies
       run: pip install selenium requests beautifulsoup4
+
+    - name: Sleep random time up to 3 hours
+      run: |
+        SECONDS=$((RANDOM % 10800))
+        echo "Sleeping for $SECONDS seconds..."
+        sleep $SECONDS
 
     - name: Run button checker
       env:
