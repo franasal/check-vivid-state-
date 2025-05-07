@@ -1,0 +1,22 @@
+name: Random Daily Dispatcher
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at midnight UTC daily
+
+jobs:
+  trigger-random:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate random delay and trigger main workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DELAY_MINUTES=$((RANDOM % 1440))
+          echo "Sleeping for $DELAY_MINUTES minutes before triggering main workflow..."
+          sleep "${DELAY_MINUTES}m"
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/get-button-text.yml/dispatches \
+            -d '{"ref":"main"}'
