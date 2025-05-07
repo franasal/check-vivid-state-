@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 # Config
-URL = "https://franasal-mcda-drug-harms-streamlit-app-48kuc0.streamlit.app/"
+URL = "https://vivid-hamburg.streamlit.app/"
 
 def send_telegram_message(message):
     token = os.getenv("TELEGRAM_TOKEN")
