@@ -18,10 +18,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install selenium
-        sudo apt-get update
-        sudo apt-get install -y chromium-chromedriver
-        sudo cp /usr/lib/chromium-browser/chromedriver /usr/bin
-
+         pip install selenium
+         sudo apt-get update
+         sudo apt-get install -y chromium-chromedriver
+         if [ ! -f /usr/bin/chromedriver ]; then
+         sudo cp /usr/lib/chromium-browser/chromedriver /usr/bin/
+         fi
     - name: Run script
       run: python get_button_text.py
