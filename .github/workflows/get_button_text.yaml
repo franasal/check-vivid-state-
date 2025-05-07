@@ -30,7 +30,7 @@ jobs:
         sudo chmod +x /usr/bin/chromedriver
 
     - name: Install Python dependencies
-      run: pip install selenium requests
+      run: pip install selenium requests beautifulsoup4
 
     - name: Run button checker
       env:
