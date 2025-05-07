@@ -2,6 +2,20 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+
+
+def send_telegram_message(message):
+    token = os.getenv("TELEGRAM_TOKEN")
+    print(token)
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    data = {"chat_id": chat_id, "text": message}
+    requests.post(url, data=data)
+    response = requests.post(url, data=data)
+    print("Telegram status:", response.status_code)
+    print("Response:", response.text)
+    print(chat_id)
+    
 # Set up headless browser
 options = Options()
 options.add_argument("--headless")
@@ -22,6 +36,7 @@ try:
     buttons = driver.find_elements(By.TAG_NAME, "button")
     for i, button in enumerate(buttons):
         print(f"Button {i+1}: {button.text}")
+        send_telegram_message(button.text)
 
 finally:
     driver.quit()
